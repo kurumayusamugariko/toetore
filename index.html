@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>WebSocket Test</title>
+    <script>
+      window.onload = () => {
+        if ("WebSocket" in window) {
+          let ws = new WebSocket("ws://127.0.0.1:3001/websocket");
+          ws.onopen = () => {
+            console.log("websocket success---");
+          };
+          ws.onmessage = (message) => {
+            let data = message.data;
+            console.log("get websocket message---", data);
+          };
+          ws.onerror = () => {
+            console.error("websocket fail");
+          };
+        } else {
+          console.error("don't support websocket");
+        }
+      };
+    </script>
+  </head>
+  <body></body>
+</html>
