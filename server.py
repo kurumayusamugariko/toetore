@@ -1,32 +1,35 @@
 import tornado.ioloop
 import tornado.web
 import tornado.websocket
-import time
-import os
 
 class WebSocketHandler(tornado.websocket.WebSocketHandler):
     def open(self):
-        print("open success")
-        self.timer = tornado.ioloop.PeriodicCallback(self.send_data, 1000)
-        self.timer.start()
+        print("WebSocket connection opened")
+        try:
+            with open("sample.py", "r", encoding="utf-8") as f:
+                file_content = f.read()
+                self.write_message(file_content)
+        except Exception as e:
+            self.write_message(f"Error reading file: {e}")
 
     def on_close(self):
-        self.timer.stop()
+        print("WebSocket connection closed")
 
-    def send_data(self):
-        self.write_message('Now is ' + str(time.time()))
+class FaviconHandler(tornado.web.RequestHandler):
+    def get(self):
+        self.set_status(204)
 
 class IndexHandler(tornado.web.RequestHandler):
     def get(self):
-        # index.htmlファイルを読み込んで提供
-        with open("index.html", "r") as f:
-            self.write(f.read())
+        self.render("index.html")  # index.htmlを表示
 
 application = tornado.web.Application([
-    (r'/', IndexHandler),
-    (r'/websocket', WebSocketHandler),
+    (r"/websocket", WebSocketHandler),
+    (r"/favicon.ico", FaviconHandler),
+    (r"/", IndexHandler),
 ])
 
-if __name__ == '__main__':
-    application.listen(3001)
+if __name__ == "__main__":
+    application.listen(8888)  # ポート8888でリッスン
+    print("Server started at http://localhost:8888")
     tornado.ioloop.IOLoop.instance().start()
