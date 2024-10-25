@@ -2,27 +2,36 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>WebSocket Test</title>
+    <title>WebSocket Pygame Example</title>
     <script>
       window.onload = () => {
         if ("WebSocket" in window) {
-          let ws = new WebSocket("ws://127.0.0.1:3001/websocket");
+          const ws = new WebSocket("ws://localhost:8888/websocket");
+
           ws.onopen = () => {
-            console.log("websocket success---");
+            console.log("WebSocket connection established");
           };
-          ws.onmessage = (message) => {
-            let data = message.data;
-            console.log("get websocket message---", data);
+
+          ws.onmessage = (event) => {
+            const pre = document.createElement("pre");
+            pre.textContent = event.data; // sample.pyの内容を表示
+            document.body.appendChild(pre);
           };
-          ws.onerror = () => {
-            console.error("websocket fail");
+
+          ws.onerror = (error) => {
+            console.error("WebSocket error:", error);
+          };
+
+          ws.onclose = () => {
+            console.log("WebSocket connection closed");
           };
         } else {
-          console.error("don't support websocket");
+          console.error("WebSocket is not supported by this browser.");
         }
       };
     </script>
   </head>
-  <body></body>
+  <body>
+    <h1>WebSocket Pygame File Content Display</h1>
+  </body>
 </html>
