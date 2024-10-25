@@ -4,6 +4,7 @@ import sys
 import random
 from component import player
 from component import target
+from component import action
 
 class Main():
     def main():
@@ -18,16 +19,8 @@ class Main():
         # playerインスタンス化
         player_instance = player.Player() 
 
-
-        # 当たった回数
-        count = 0
-
-        # 当たった回数を表示
-        font1 = pygame.font.SysFont("hg正楷書体pro", 30)
-
-        # スペースキーが押されたかどうか
-        space_pressed = False
-        hit = False
+        # actionインスタンス化
+        game = action.Action(target_instance, player_instance)
 
         while True:
             # 画面の背景色を設定
@@ -39,28 +32,8 @@ class Main():
             player_instance.update()  # playerの位置を更新
             player_instance.draw(screen)  # playerを描画
 
-
-            # 撃つ処理
-            keys = pygame.key.get_pressed()  # キーの状態を取得
-            if keys[K_SPACE]:
-                if not hit and not space_pressed:
-                    if target_instance._rect.colliderect(player_instance._rect):  # playerのrectを使う
-                        hit = True
-                        count += 1  # カウントを更新
-                        # ターゲットの位置を再設定
-                        target_instance._rect.x = random.randint(0, w - target_instance._rect.width)
-                        target_instance._rect.y = random.randint(0, h - target_instance._rect.height)
-                    space_pressed = True
-            else:
-                space_pressed = False
-                hit = False
-            
-            # 画像の描画
-            target_instance.draw(screen) 
-
-            # カウントテキストを描画
-            count_text = font1.render(f"Count: {count}", True, (0, 0, 0))
-            screen.blit(count_text, (1100, 650))
+            game.update()  # 当たり判定を更新
+            game.draw(screen)  # カウントを描画
             
             # 画面更新
             pygame.display.update() 
