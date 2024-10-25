@@ -13,6 +13,8 @@ class Player():
         self._speed = 30
 
 
+
+
     def update(self):
         key = pygame.key.get_pressed()
 
@@ -25,6 +27,11 @@ class Player():
             self._rect.move_ip(0, -self._speed)
         if key[pygame.K_DOWN]:
             self._rect.move_ip(0, self._speed)
+
+    def reset(self):        
+        # playerの初期位置
+        self._rect = pygame.Rect(1280 / 2, 720 / 2, 100, 100)
+
 
     def draw(self, screen):
         screen.blit(self._image, self._rect)
