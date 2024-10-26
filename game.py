@@ -22,6 +22,7 @@ class Main:
         player_id = None
         room_id = None
         players = {}
+        target_player_id = None  # 初期化
 
         # インスタンス化
         target_instance = target.Target()
@@ -46,13 +47,14 @@ class Main:
             while True:
                 screen.fill((255, 255, 255))
 
+                # x と y の初期化
+                x, y = player_instance._rect.x, player_instance._rect.y
+
                 if player_id in players:
-                    if game.is_playing():
+                    # target_player_idがNoneでないことを確認
+                    if target_player_id is not None and game.is_playing() and players[target_player_id]['flag']:
                         game.update()
                         game.draw(screen)
-
-                        x = player_instance._rect.x
-                        y = player_instance._rect.y
                     else:
                         resultScene.draw(screen)
 
@@ -93,10 +95,10 @@ class Main:
                                 break  # 最初の相手を選択
 
                         # 相手のflagを取り出す
-                        try:
+                        if target_player_id in players:
                             flag_value = players[target_player_id]['flag']
                             print(f"Flag for {target_player_id}: {flag_value}")
-                        except KeyError:
+                        else:
                             print(f"Player {target_player_id} not found or does not have a flag.")
 
                 except Exception as e:
