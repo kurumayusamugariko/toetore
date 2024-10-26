@@ -8,6 +8,7 @@ from component import player
 from component import target
 from component import action
 import result
+import start  # start.pyからインポート
 
 class Main:
     async def main(self):
@@ -32,7 +33,7 @@ class Main:
         game = action.Action(target_instance, player_instance)
         resultScene = result.resultScene(game)
 
-        uri = "ws://44.201.122.14/websocket"
+        uri = "ws://localhost:8080/websocket"
         async with websockets.connect(uri) as websocket:
             # サーバーからの初期メッセージを受信
             response = await websocket.recv()
@@ -46,7 +47,18 @@ class Main:
 
                 print(f"My player ID: {player_id}")
 
+                countdown_done = data.get("countdown_done", False)  # サーバーからカウントダウンの状態を受信
+
             while True:
+                if not countdown_done:
+                    # サーバーからカウントダウンの開始通知を受信
+                    response = await websocket.recv()
+                    data = json.loads(response)
+                    if data["type"] == "start_countdown":
+                        start.countdown(screen, font)
+                        countdown_done = True
+                        await websocket.send(json.dumps({"type": "countdown_done"}))  # サーバーにカウントダウンが完了したことを通知
+
                 screen.fill((255, 255, 255))
 
                 # x と y の初期化
@@ -107,7 +119,7 @@ class Main:
                 if room_id is not None:
                     font = pygame.font.Font(None, 36)
                     room_text = font.render(f"Room ID: {room_id}", True, (0, 0, 0))
-                    screen.blit(text, (100, 100))
+                    # screen.blit(text, (100, 100))
                     screen.blit(room_text, (10, 10))
 
                 if target_player_id is not None and target_player_id in players:
@@ -116,8 +128,8 @@ class Main:
 
                 pygame.display.update()
                 clock.tick(30)
-
-                # イベント処理
+                
+                #イベント処理
                 for event in pygame.event.get():
                     if event.type == pygame.QUIT:
                         pygame.quit()
