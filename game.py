@@ -33,7 +33,7 @@ class Main:
         game = action.Action(target_instance, player_instance)
         resultScene = result.resultScene(game)
 
-        uri = "ws://localhost:8080/websocket"
+        uri = "ws://44.201.122.14/websocket"
         async with websockets.connect(uri) as websocket:
             # サーバーからの初期メッセージを受信
             response = await websocket.recv()
