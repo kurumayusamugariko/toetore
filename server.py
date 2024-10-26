@@ -2,6 +2,11 @@ import tornado.ioloop
 import tornado.web
 import tornado.websocket
 import json
+import certifi
+from dotenv import load_dotenv
+
+# SSL証明書のパスを確認
+print(certifi.where())
 
 # ゲームルームの管理
 rooms = {}
@@ -76,6 +81,6 @@ def make_app():
 
 if __name__ == "__main__":
     app = make_app()
-    app.listen(3001)
-    print("Server started on port 3001")
+    app.listen(8080, address="0.0.0.0")
+    print("Server started on port 8080")
     tornado.ioloop.IOLoop.instance().start()
