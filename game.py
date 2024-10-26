@@ -40,7 +40,7 @@ class Main:
             if data["type"] == "room_id":
                 room_id = data["room_id"]
                 player_id = data["player_id"]
-                players[player_id] = {"count": 0, "position": (640, 360), "flag": True}
+                players[player_id] = {"score": 0, "position": (640, 360), "flag": True}
 
                 print(f"My player ID: {player_id}")
 
@@ -52,13 +52,23 @@ class Main:
 
                 if player_id in players:
                     # target_player_idがNoneでないことを確認
-                    if target_player_id is not None and game.is_playing() and players[target_player_id]['flag']:
-                        game.update()
-                        game.draw(screen)
+                    if target_player_id is not None:
+                        if game.is_playing() and players[target_player_id]['flag']:
+                            game.update()
+                            game.draw(screen)
+                        else:
+                            # ゲームが終了している場合、勝利または敗北の判定
+                            if players[target_player_id]['flag']:
+                                resultScene.win_image(screen)
+                            else:
+                                resultScene.lose_image(screen)
+                            resultScene.draw(screen)
                     else:
-                        resultScene.draw(screen)
+                        # target_player_idがNoneの場合の処理
+                        print("Target player ID is None.")
 
                     count = game._count
+                    players[player_id]['score'] = count  # 自分のスコアを更新
 
                     await websocket.send(json.dumps({
                         "id": player_id,
@@ -72,34 +82,21 @@ class Main:
                 try:
                     response = await websocket.recv()
                     data2 = json.loads(response)
-                    print("Received data:", data2)
 
                     if data2["type"] == "update":
                         player_data = data2["player_data"]
                         players[player_data["id"]] = {
-                            "count": player_data["count"],
+                            "score": player_data["count"],  # スコアを更新
                             "position": tuple(player_data["position"]),
                             "flag": player_data["flag"]
                         }
 
-                        print("結果")
-                        print(players)
-
-                        # 自分のプレイヤーIDを取得
+                        # 相手のプレイヤーIDを取得
                         my_player_id = player_id
-
-                        # 相手のプレイヤーIDを取得（自分以外のプレイヤーを選択）
                         for pid in players:
                             if pid != my_player_id:
                                 target_player_id = pid  # 相手のプレイヤーID
                                 break  # 最初の相手を選択
-
-                        # 相手のflagを取り出す
-                        if target_player_id in players:
-                            flag_value = players[target_player_id]['flag']
-                            print(f"Flag for {target_player_id}: {flag_value}")
-                        else:
-                            print(f"Player {target_player_id} not found or does not have a flag.")
 
                 except Exception as e:
                     print(f"Receive error: {e}")
@@ -109,6 +106,10 @@ class Main:
                     font = pygame.font.Font(None, 36)
                     room_text = font.render(f"Room ID: {room_id}", True, (0, 0, 0))
                     screen.blit(room_text, (10, 10))
+
+                if target_player_id is not None and target_player_id in players:
+                    opponent_score_surface = pygame.font.Font(None, 36).render(f"Opponent's Score: {players[target_player_id]['score']}", True, (0, 0, 0))
+                    screen.blit(opponent_score_surface, (50, 50))
 
                 pygame.display.update()
                 clock.tick(30)

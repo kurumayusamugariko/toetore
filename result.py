@@ -5,11 +5,21 @@ class resultScene():
     def __init__(self, game):
         self._game = game
         self.font = pygame.font.Font(None, 50)
+        self._image = pygame.image.load("./image/win.png")
+        self._image = pygame.transform.scale(self._image, (100, 100))
+        self._image2 = pygame.image.load("./image/lose.png")
+        self._image2 = pygame.transform.scale(self._image2, (100, 100))
 
     def update(self):
         key = pygame.key.get_pressed()
         if key[pygame.K_SPACE]:  # スペースキーが押されたら
             self._game.reset()  # ゲームをリセット
+
+    def win_image(self, screen):
+        screen.blit(self._image, (640, 200))
+
+    def lose_image(self, screen):
+        screen.blit(self._image2, (640, 200))
 
     def draw(self, screen):
         score_msg = self.font.render(f"Your Score: {self._game._count}", True, (0, 0, 0))
