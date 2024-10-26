@@ -16,7 +16,7 @@ class Main:
         # 画面設定
         screen = pygame.display.set_mode((1280, 720))
         clock = pygame.time.Clock()  # Clockを初期化
-        font = pygame.font.Font('/home/rukayuki/toetore/HGRGY.TTC', 50)
+        font = pygame.font.Font('./HGRGY.TTC', 50)
         text = font.render('日本語', True, (0, 0, 0))
 
         # プレイヤーの初期設定

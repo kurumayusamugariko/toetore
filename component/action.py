@@ -9,16 +9,16 @@ class Action():
         self._font1 = pygame.font.SysFont("hg正楷書体pro", 30)
         self._space_pressed = False
         self._hit = False
-        self._is_playing = True  # 初期化
+        self._is_playing = True
 
     def is_playing(self):
         return self._is_playing
 
     def reset(self):
         self._is_playing = True
-        self._count = 0  # カウントをリセット
+        self._count = 0
         self._player_instance.reset()
-        self._target_instance.update()
+        self._target_instance.reset()
 
     def update(self):
         keys = pygame.key.get_pressed()
@@ -27,13 +27,23 @@ class Action():
 
         if keys[pygame.K_SPACE]:
             if not self._hit and not self._space_pressed:
-                if self._target_instance._rect.colliderect(self._player_instance._rect):
+                # プレイヤーの矩形を取得
+                player_rect = self._player_instance._rect
+                # 各ターゲットの矩形を作成
+                target_rects = [
+                    pygame.Rect(self._target_instance._x, self._target_instance._y, 100, 100),
+                    pygame.Rect(self._target_instance._x2, self._target_instance._y2, 100, 100),
+                    pygame.Rect(self._target_instance._x3, self._target_instance._y3, 100, 100)
+                ]
+                
+                
+                if target_rects[0].colliderect(player_rect):
                     self._hit = True
                     self._count += 1
-                    if self._count >= 5:  # 5回当たったら
+                    if self._count >= 5:
                         self._is_playing = False
-                    self._target_instance._rect.x = random.randint(0, 1280 - self._target_instance._rect.width)
-                    self._target_instance._rect.y = random.randint(0, 720 - self._target_instance._rect.height)
+                    self._target_instance.reset()  # 新しい問題に切り替え
+
                 self._space_pressed = True
         else:
             self._space_pressed = False
