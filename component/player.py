@@ -8,9 +8,10 @@ class Player():
         
         # playerの初期位置
         self._rect = pygame.Rect(1280 / 2, 720 / 2, 100, 100)
+
         
         # playerのスピード
-        self._speed = 30
+        self._speed = 70
 
 
 
