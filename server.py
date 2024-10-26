@@ -24,10 +24,9 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
             room_id = len(rooms) + 1
             rooms[room_id] = []
 
-        # ルームにクライアントを追加
         rooms[room_id].append(self)
         self.room_id = room_id
-        self.player_id = str(uuid.uuid4())
+        self.player_id = f"player{len(rooms[room_id])}"  # プレイヤーIDを "player1" または "player2" に設定
         print(f"WebSocket opened, assigned to room {room_id}, player ID: {self.player_id}")
 
         # ルームIDとプレイヤーIDをクライアントに送信
