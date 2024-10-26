@@ -3,6 +3,11 @@ import tornado.web
 import tornado.websocket
 import json
 import uuid
+import certifi
+from dotenv import load_dotenv
+
+# SSL証明書のパスを確認
+print(certifi.where())
 
 # ゲームルームの管理
 rooms = {}
@@ -12,6 +17,7 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
         return True  # すべてのオリジンを許可
 
     def open(self):
+			  print("WebSocket opened")
         # 空いているルームを探す
         room_id = None
         for rid, clients in rooms.items():
@@ -30,6 +36,7 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
         self.player_id = str(uuid.uuid4())
         print(f"WebSocket opened, assigned to room {room_id}, player ID: {self.player_id}")
 
+        print("data",data)
         # ルームIDとプレイヤーIDをクライアントに送信
         self.write_message(json.dumps({"type": "room_id", "room_id": room_id, "player_id": self.player_id}))
 
@@ -54,6 +61,6 @@ def make_app():
 
 if __name__ == "__main__":
     app = make_app()
-    app.listen(3001)
-    print("Server started on port 3001")
+    app.listen(8080, address="0.0.0.0")
+    print("Server started on port 8080")
     tornado.ioloop.IOLoop.instance().start()
