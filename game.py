@@ -1,7 +1,6 @@
 import pygame
 from pygame.locals import *
 import sys
-import random
 import json
 import asyncio
 import websockets
@@ -10,7 +9,7 @@ from component import target
 from component import action
 import result
 
-class Main():
+class Main:
     async def main(self):
         pygame.init()
 
@@ -22,7 +21,7 @@ class Main():
         global player_id, room_id
         player_id = None
         room_id = None
-        players = {player_id: {"count": 0}}
+        players = {}
 
         # インスタンス化
         target_instance = target.Target()
@@ -32,37 +31,36 @@ class Main():
 
         uri = "ws://127.0.0.1:3001/websocket"
         async with websockets.connect(uri) as websocket:
+            # サーバーからの初期メッセージを受信
             response = await websocket.recv()
             data = json.loads(response)
             print(data)
+
             if data["type"] == "room_id":
                 room_id = data["room_id"]
                 player_id = data["player_id"]
-                players[player_id] = {"count": 0} 
+                players[player_id] = {"count": 0, "position": (640, 360), "flag": True}
+
+                print(f"My player ID: {player_id}")
 
             while True:
                 screen.fill((255, 255, 255))
 
                 if player_id in players:
-                    game._count = players[player_id]["count"]
-
                     if game.is_playing():
                         game.update()
                         game.draw(screen)
 
-                        # 現在の位置を取得
                         x = player_instance._rect.x
                         y = player_instance._rect.y
-                        # print(data)
                     else:
                         resultScene.draw(screen)
 
-                    players[player_id]["count"] = game._count
+                    count = game._count
 
-                    # 位置とカウントを送信
                     await websocket.send(json.dumps({
                         "id": player_id,
-                        "count": players[player_id]["count"],
+                        "count": count,
                         "x": x,
                         "y": y,
                         "flag": game._is_playing
@@ -71,30 +69,38 @@ class Main():
                 # 他のプレイヤーの位置を受信
                 try:
                     response = await websocket.recv()
-                    data = json.loads(response)
-                    
-                    print("Received data:", data)  # 受信したデータを表示
-                    
-                    if data["id"] in players:
-                        players[data["id"]]["count"] = data["count"]
-                        players[data["id"]]["position"] = (data["x"], data["y"])
-                        players[data["id"]]["flag"] = data["flag"]
-                    else:
-                        players[data["id"]] = {
-                            "count": data["count"],
-                            "position": (data["x"], data["y"]),
-                            "flag": data["flag"]
+                    data2 = json.loads(response)
+                    print("Received data:", data2)
+
+                    if data2["type"] == "update":
+                        player_data = data2["player_data"]
+                        players[player_data["id"]] = {
+                            "count": player_data["count"],
+                            "position": tuple(player_data["position"]),
+                            "flag": player_data["flag"]
                         }
 
-                    print("結果")
-                    print(players)
-                    for player_id, player_data in players.items():
-                        print(f"id: {player_id}")
-                        print(f"data: {player_data}")
+                        print("結果")
+                        print(players)
+
+                        # 自分のプレイヤーIDを取得
+                        my_player_id = player_id
+
+                        # 相手のプレイヤーIDを取得（自分以外のプレイヤーを選択）
+                        for pid in players:
+                            if pid != my_player_id:
+                                target_player_id = pid  # 相手のプレイヤーID
+                                break  # 最初の相手を選択
+
+                        # 相手のflagを取り出す
+                        try:
+                            flag_value = players[target_player_id]['flag']
+                            print(f"Flag for {target_player_id}: {flag_value}")
+                        except KeyError:
+                            print(f"Player {target_player_id} not found or does not have a flag.")
 
                 except Exception as e:
                     print(f"Receive error: {e}")
-
 
                 # ルームID表示
                 if room_id is not None:
@@ -114,7 +120,6 @@ class Main():
                         if event.key == K_ESCAPE:
                             pygame.quit()
                             sys.exit()
-
 
 # asyncio.run()を使用して非同期関数を実行
 if __name__ == "__main__":
