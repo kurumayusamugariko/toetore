@@ -34,11 +34,12 @@ class Target():
         self.update_question_data(self._ID1)
 
     def update_question_data(self, question_id):
+        self._font2 = pygame.font.Font('./HGRGY.TTC', 50)
         self._sentence = self._data[question_id][1]
         self._sentence_surface = self._font.render(self._sentence, True, (0, 0, 0))
 
         self._japanese = self._data[question_id][3]
-        self._japanese_surface = self._font.render(self._japanese, True, (0, 0, 0))
+        self._japanese_surface = self._font2.render(self._japanese, True, (0, 0, 0))
 
         self._anser = self._data[question_id][2]
         self._anser_surface = self._font.render(self._anser, True, (0, 0, 0))
