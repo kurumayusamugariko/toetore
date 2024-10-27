@@ -9,6 +9,7 @@ from component import target
 from component import action
 import result
 import start  # start.pyからインポート
+import dotenv
 
 class Main:
     async def main(self):

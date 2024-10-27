@@ -1,8 +1,7 @@
 # toetore
 
-sudo lsof -i :3001
-sudo kill -9 {pid}
+python version 3.12.1
 
-= insatll =
-websocket
-pygame
+プレイ前にインストール
+python(必須)
+$ pip install -r requirements.txt
