@@ -1,7 +1,10 @@
 import pygame
 import time
+import os
 
 def countdown(screen, font):
+    audio_path = os.path.join(os.path.dirname(__file__), 'audio', '銃火器・構える03.mp3')
+    ready_sound = pygame.mixer.Sound(audio_path)
     white_color = (255, 255, 255)
     black_color = (0, 0, 0)
     for i in range(5, 0, -1):
@@ -15,6 +18,7 @@ def countdown(screen, font):
     screen.blit(text, (screen.get_width() / 2 - 100, screen.get_height() / 2 - 50))
     pygame.display.update()
     time.sleep(1)
+    ready_sound.play()
 
 # class Main:
 #     def __init__(self):
