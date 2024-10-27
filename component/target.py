@@ -30,11 +30,11 @@ class Target():
         self._list = self.rand_ints_nodup(1, max_id, 3)
         self._ID1, self._ID2, self._ID3 = map(str, self._list)
 
-        self._font = pygame.font.Font(None, 36)
+        self._font = pygame.font.Font(None, 50)
         self.update_question_data(self._ID1)
 
     def update_question_data(self, question_id):
-        self._font2 = pygame.font.Font('./HGRGY.TTC', 50)
+        self._font2 = pygame.font.Font('./HGRGY.TTC', 40)
         self._sentence = self._data[question_id][1]
         self._sentence_surface = self._font.render(self._sentence, True, (0, 0, 0))
 
@@ -51,13 +51,13 @@ class Target():
     def initialize_positions(self):
         text_width, text_height = self._anser_surface.get_size()
         self._x = random.randint(0, 1100 - text_width)
-        self._y = random.randint(0, 600 - text_height)
+        self._y = random.randint(100, 500 - text_height)
 
         self._x2 = random.randint(0, 1100 - text_width)
-        self._y2 = random.randint(0, 600 - text_height)
+        self._y2 = random.randint(100, 500 - text_height)
 
         self._x3 = random.randint(0, 1100 - text_width)
-        self._y3 = random.randint(0, 600 - text_height)
+        self._y3 = random.randint(100, 500 - text_height)
 
     def initialize_movement(self):
         self._speed = 5
@@ -111,11 +111,22 @@ class Target():
                 self._moved3 = 0
 
     def draw(self, screen):
+        # ターゲットの描画
         screen.blit(self._anser_surface, (self._x, self._y))  
         screen.blit(self._dammy1_surface, (self._x2, self._y2))  
         screen.blit(self._dammy2_surface, (self._x3, self._y3)) 
-        screen.blit(self._sentence_surface, (640, 650))
-        screen.blit(self._japanese_surface, (640, 550))
+        
+        # 問題文と翻訳を中央に表示
+        sentence_width, sentence_height = self._sentence_surface.get_size()
+        japanese_width, japanese_height = self._japanese_surface.get_size()
+        
+        # 中央の座標を計算
+        sentence_x = (1280 - sentence_width) 
+        japanese_x = (1280 - japanese_width) 
+
+        # それぞれのy座標は固定で設定
+        screen.blit(self._sentence_surface, (sentence_x/2, 600))
+        screen.blit(self._japanese_surface, (japanese_x/2, 650))
 
     def reset(self):
         self.select_questions()
