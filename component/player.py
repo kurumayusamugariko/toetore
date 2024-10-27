@@ -2,19 +2,15 @@ import pygame
 
 class Player():
     def __init__(self):
-        # 画像プロパティ
+        # 初期画像プロパティ
         self._image = pygame.image.load("./image/エイム.png")
         self._image = pygame.transform.scale(self._image, (100, 100))
         
-        # playerの初期位置
+        # プレイヤーの初期位置
         self._rect = pygame.Rect(1280 / 2, 720 / 2, 100, 100)
 
-        
-        # playerのスピード
+        # プレイヤーのスピード
         self._speed = 50
-
-
-
 
     def update(self):
         key = pygame.key.get_pressed()
@@ -30,9 +26,12 @@ class Player():
             self._rect.move_ip(0, self._speed)
 
     def reset(self):        
-        # playerの初期位置
+        # プレイヤーの初期位置
         self._rect = pygame.Rect(1280 / 2, 720 / 2, 100, 100)
-
 
     def draw(self, screen):
         screen.blit(self._image, self._rect)
+
+    def change_image(self, new_image):
+        """画像を切り替えるメソッド"""
+        self._image = new_image
