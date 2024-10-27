@@ -10,12 +10,14 @@ print(certifi.where())
 
 # ゲームルームの管理
 rooms = {}
+countdown_done = False  # カウントダウンの状態を管理
 
 class WebSocketHandler(tornado.websocket.WebSocketHandler):
     def check_origin(self, origin):
         return True  # すべてのオリジンを許可
 
     def open(self):
+        global countdown_done
         # 空いているルームを探す
         room_id = None
         for rid, clients in rooms.items():
@@ -45,6 +47,11 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
         # ルームIDとプレイヤーIDをクライアントに送信
         self.write_message(json.dumps({"type": "room_id", "room_id": room_id, "player_id": self.player_id}))
 
+        # プレイヤーが2人揃ったらカウントダウンを開始
+        if len(rooms[room_id]) == 2 and not countdown_done:
+            for client, _ in rooms[room_id]:
+                client.write_message(json.dumps({"type": "start_countdown"}))
+
     def on_close(self):
         if hasattr(self, 'room_id'):
             # プレイヤーをルームから削除
@@ -54,6 +61,7 @@ class WebSocketHandler(tornado.websocket.WebSocketHandler):
         print("WebSocket closed")
 
     def on_message(self, message):
+        global countdown_done
         print(f"Received message: {message}")
         # メッセージを解析
         data = json.loads(message)
@@ -81,6 +89,6 @@ def make_app():
 
 if __name__ == "__main__":
     app = make_app()
-    app.listen(8080, address="0.0.0.0")
+    app.listen(8080, address="0.0.0.0")  # サーバーがポート8080でリッスン
     print("Server started on port 8080")
     tornado.ioloop.IOLoop.instance().start()

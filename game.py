@@ -8,6 +8,7 @@ from component import player
 from component import target
 from component import action
 import result
+import start  # start.pyからインポート
 
 class Main:
     async def main(self):
@@ -46,7 +47,18 @@ class Main:
 
                 print(f"My player ID: {player_id}")
 
+                countdown_done = data.get("countdown_done", False)  # サーバーからカウントダウンの状態を受信
+
             while True:
+                if not countdown_done:
+                    # サーバーからカウントダウンの開始通知を受信
+                    response = await websocket.recv()
+                    data = json.loads(response)
+                    if data["type"] == "start_countdown":
+                        start.countdown(screen, font)
+                        countdown_done = True
+                        await websocket.send(json.dumps({"type": "countdown_done"}))  # サーバーにカウントダウンが完了したことを通知
+
                 screen.fill((255, 255, 255))
 
                 # x と y の初期化
@@ -115,8 +127,8 @@ class Main:
 
                 pygame.display.update()
                 clock.tick(30)
-
-                # イベント処理
+                
+                #イベント処理
                 for event in pygame.event.get():
                     if event.type == pygame.QUIT:
                         pygame.quit()
