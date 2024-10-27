@@ -11,7 +11,7 @@ class Player():
 
         
         # playerのスピード
-        self._speed = 70
+        self._speed = 50
 
 
 
