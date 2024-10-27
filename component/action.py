@@ -1,5 +1,6 @@
-import pygame 
+import pygame
 import random
+import os
 
 class Action():
     def __init__(self, target_instance, player_instance):
@@ -18,6 +19,10 @@ class Action():
         # 元のプレイヤー画像の読み込み
         self._original_image = pygame.image.load("./image/エイム.png")  # 元の画像
         self._original_image = pygame.transform.scale(self._original_image, (100, 100))
+        
+        # 音声の読み込み
+        self._hit_sound = pygame.mixer.Sound("./audio/特殊攻撃03.mp3")
+        self._hit_sound2 = pygame.mixer.Sound("./audio/銃火器・空撃ち.mp3")
 
     def is_playing(self):
         return self._is_playing
@@ -52,11 +57,15 @@ class Action():
                 self._player_instance.change_image(self._original_image)  # 元の画像に戻す
             self._hit = False  # どのターゲットにも重ならなかった場合
 
-        if keys[pygame.K_SPACE] and self._hit and not self._space_pressed:
-            self._count += 1
-            if self._count >= 5:
-                self._is_playing = False
-            self._target_instance.reset()  # 新しい問題に切り替え
+        if keys[pygame.K_SPACE]:
+            if self._hit and not self._space_pressed:
+                self._hit_sound.play()  # 当たった場合の音を鳴らす
+                self._count += 1
+                if self._count >= 5:
+                    self._is_playing = False
+                self._target_instance.reset()  # 新しい問題に切り替え
+            elif not self._hit and not self._space_pressed:
+                self._hit_sound2.play()  # 当たらなかった場合の音を鳴らす
 
         self._space_pressed = keys[pygame.K_SPACE]
 
