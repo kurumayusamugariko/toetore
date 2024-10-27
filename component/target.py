@@ -50,14 +50,14 @@ class Target():
 
     def initialize_positions(self):
         text_width, text_height = self._anser_surface.get_size()
-        self._x = random.randint(0, 1100 - text_width)
-        self._y = random.randint(100, 500 - text_height)
+        self._x = random.randint(150, 1100 - text_width)
+        self._y = random.randint(150, 500 - text_height)
 
-        self._x2 = random.randint(0, 1100 - text_width)
-        self._y2 = random.randint(100, 500 - text_height)
+        self._x2 = random.randint(150, 1100 - text_width)
+        self._y2 = random.randint(150, 500 - text_height)
 
-        self._x3 = random.randint(0, 1100 - text_width)
-        self._y3 = random.randint(100, 500 - text_height)
+        self._x3 = random.randint(150, 1100 - text_width)
+        self._y3 = random.randint(150, 500 - text_height)
 
     def initialize_movement(self):
         self._speed = 5
@@ -84,13 +84,13 @@ class Target():
 
         # ダミー1
         if self._up2:
-            self._y2 -= self._speed
+            self._x2 -= self._speed
             self._moved2 += self._speed
             if self._moved2 >= 100:
                 self._up2 = False
                 self._moved2 = 0
         else:
-            self._y2 += self._speed
+            self._x2 += self._speed
             self._moved2 += self._speed
             if self._moved2 >= 100:
                 self._up2 = True
