@@ -17,7 +17,7 @@ class Main:
         # 画面設定
         screen = pygame.display.set_mode((1280, 720))
         clock = pygame.time.Clock()  # Clockを初期化
-        font = pygame.font.Font('/home/rukayuki/toetore/HGRGY.TTC', 50)
+        font = pygame.font.Font('./HGRGY.TTC', 50)
         text = font.render('日本語', True, (0, 0, 0))
 
         # プレイヤーの初期設定
@@ -119,7 +119,6 @@ class Main:
                 if room_id is not None:
                     font = pygame.font.Font(None, 36)
                     room_text = font.render(f"Room ID: {room_id}", True, (0, 0, 0))
-                    # screen.blit(text, (100, 100))
                     screen.blit(room_text, (10, 10))
 
                 if target_player_id is not None and target_player_id in players:
