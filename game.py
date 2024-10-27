@@ -123,7 +123,7 @@ class Main:
 
                 if target_player_id is not None and target_player_id in players:
                     opponent_score_surface = pygame.font.Font(None, 36).render(f"Opponent's Score: {players[target_player_id]['score']}", True, (0, 0, 0))
-                    screen.blit(opponent_score_surface, (50, 50))
+                    screen.blit(opponent_score_surface, (200, 50))
 
                 pygame.display.update()
                 clock.tick(30)

@@ -6,7 +6,7 @@ class Action():
         self._count = 0
         self._target_instance = target_instance
         self._player_instance = player_instance
-        self._font1 = pygame.font.SysFont("hg正楷書体pro", 30)
+        self._font1 = pygame.font.SysFont("hg正楷書体pro", 36)
         self._space_pressed = False
         self._hit = False
         self._is_playing = True
@@ -29,9 +29,10 @@ class Action():
             if not self._hit and not self._space_pressed:
                 # プレイヤーの矩形を取得
                 player_rect = self._player_instance._rect
+                player_rect = pygame.Rect(player_rect.x, player_rect.y, 50, 50)
                 # 各ターゲットの矩形を作成
                 target_rects = [
-                    pygame.Rect(self._target_instance._x, self._target_instance._y, 100, 100),
+                    pygame.Rect(self._target_instance._x, self._target_instance._y, 20, 20),
                     pygame.Rect(self._target_instance._x2, self._target_instance._y2, 100, 100),
                     pygame.Rect(self._target_instance._x3, self._target_instance._y3, 100, 100)
                 ]
@@ -52,5 +53,5 @@ class Action():
     def draw(self, screen):
         self._target_instance.draw(screen)
         self._player_instance.draw(screen)
-        count_text = self._font1.render(f"Count: {self._count}", True, (0, 0, 0))
-        screen.blit(count_text, (1100, 650))
+        count_text = self._font1.render(f"Your Score: {self._count}", True, (0, 0, 0))
+        screen.blit(count_text, (800, 50))
