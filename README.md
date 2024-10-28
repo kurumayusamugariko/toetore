@@ -7,5 +7,5 @@ python(必須)
 $ pip install -r requirements.txt
 
 
-#ゲームスタート用コマンド　2人それってから
+#ゲームスタート用コマンド　2人そろってからカウントダウンスタート
 $ python game.py
