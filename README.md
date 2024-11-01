@@ -9,3 +9,5 @@ $ pip install -r requirements.txt
 
 #ゲームスタート用コマンド　2人そろってからカウントダウンスタート
 $ python game.py
+
+サーバー起動しなきゃなので、遊びたい方はもぐもまでご一報ください、、
